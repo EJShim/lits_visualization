@@ -10,7 +10,6 @@ class E_Manager{
 
     private:
     static E_Manager* m_instance;
-
     static void Destroy(){delete m_instance;}
 
     public:

@@ -21,7 +21,7 @@ E_Window::E_Window(QWidget* parent):QMainWindow(parent){
 }
 
 E_Window::~E_Window(){
-    std::cout << "Window Destroyed" << std::endl;
+        
 }
 
 QToolBar* E_Window::InitToolbar(){
@@ -59,6 +59,15 @@ QWidget* E_Window::InitCentralWidget(){
     return centralWidget;
 }
 
+
+
+
+
+
+
+
+
+////////////////////////////////////////////////////////////////////Action SLOTS////////////////////////////////////////////////////////
 void E_Window::ImportVolume(){
     std::cout << "Volume Import Triggered" << std::endl;    
 }
