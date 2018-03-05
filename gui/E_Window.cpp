@@ -17,7 +17,8 @@ E_Window::E_Window(QWidget* parent):QMainWindow(parent){
     this->addToolBar(Qt::TopToolBarArea, toolbar);
 
     //Import Volume
-    QAction* import_action = new QAction(QString("Import Volume"), this);
+    QIcon icon = QIcon(":/images/pantone-2.png");
+    QAction* import_action = new QAction(QIcon(":/images/pantone-2.png") ,QString("Import Volume"), this);
     toolbar->addAction(import_action);
     connect(import_action, SIGNAL(triggered()), this, SLOT(ImportVolume()));
 

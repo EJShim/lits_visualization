@@ -1,11 +1,13 @@
 cmake_minimum_required(VERSION 2.8)
 set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(SRC_FILES 
     main
-    gui/E_Window
-    manager/E_Manager
+    resources/resources.qrc
+    gui/E_Window.cpp
+    manager/E_Manager.cpp
 )
 include_directories(
     gui/    
@@ -26,6 +28,5 @@ target_link_libraries(run ${VTK_LIBRARIES})
 # find_package(Qt5Gui)
 # find_package(Qt5Widgets)
 # find_package(Qt5OpenGL)
-
 # target_link_libraries(run Qt5::Widgets)
 
