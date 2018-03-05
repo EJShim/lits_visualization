@@ -7,9 +7,11 @@
 #include <vtkProperty.h>
 #include <vtkCamera.h>
 #include <vtkSmartPointer.h>
+#include "E_Window.h"
+
 
 int main(int, char *[])
-{  
+{
   vtkSmartPointer<vtkCylinderSource> cylinder = vtkSmartPointer<vtkCylinderSource>::New();
   cylinder->SetResolution(8);
 
