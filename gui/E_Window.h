@@ -1,5 +1,6 @@
 #include <QMainWindow>
 #include <QVTKWidget.h>
+#include <QToolBar>
 
 
 class E_Window : public QMainWindow{
@@ -11,9 +12,14 @@ class E_Window : public QMainWindow{
     ~E_Window();
 
     protected:
+    QToolBar* InitToolbar();
+    QWidget* InitCentralWidget();
+
+    protected:
     QVTKWidget* m_renderingWidget;
 
     public Q_SLOTS:
     void ImportVolume();
+    void RunSegmentation();
     
 };
