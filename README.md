@@ -1,1 +1,3 @@
-# lits_visualization
+# Lits Project visualization application
+
+C++, VTK, QT
