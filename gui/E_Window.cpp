@@ -1,4 +1,5 @@
 #include "E_Window.h"
+#include "E_Manager.h"
 #include <iostream>
 
 #include <QToolBar>
@@ -27,4 +28,6 @@ E_Window::~E_Window(){
 
 void E_Window::ImportVolume(){
     std::cout << "Volume Import Triggered" << std::endl;
+
+    E_Manager::Mgr()->TestFunction();
 }

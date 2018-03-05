@@ -5,7 +5,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(SRC_FILES 
     main
     gui/E_Window
-    manager/
+    manager/E_Manager
 )
 include_directories(
     gui/    
