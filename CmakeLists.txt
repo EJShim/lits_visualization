@@ -3,8 +3,13 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(SRC_FILES 
-main
-E_Window
+    main
+    gui/E_Window
+    manager/
+)
+include_directories(
+    gui/    
+    manager/
 )
 add_executable(run ${SRC_FILES})
 # add_executable(run MACOSX_BUNDLE main)
@@ -16,9 +21,7 @@ find_package(VTK REQUIRED)
 include(${VTK_USE_FILE})
 target_link_libraries(run ${VTK_LIBRARIES})
 
-
 # Qt Configuration
-# /Users/EJ/Qt/5.7/clang_64/lib/cmake
 find_package(Qt5Core REQUIRED)
 find_package(Qt5Gui)
 find_package(Qt5Widgets)
