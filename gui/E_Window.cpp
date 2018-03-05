@@ -3,6 +3,7 @@
 #include <iostream>
 #include <QVBoxLayout>
 #include <QToolBar>
+#include <QAction>
 
 E_Window::E_Window(QWidget* parent):QMainWindow(parent){
     //Show in maximum size
@@ -16,7 +17,7 @@ E_Window::E_Window(QWidget* parent):QMainWindow(parent){
     this->addToolBar(Qt::TopToolBarArea, toolbar);
 
     //Import Volume
-    QAction* import_action = new QAction(QString("Import Volume"));
+    QAction* import_action = new QAction(QString("Import Volume"), this);
     toolbar->addAction(import_action);
     connect(import_action, SIGNAL(triggered()), this, SLOT(ImportVolume()));
 

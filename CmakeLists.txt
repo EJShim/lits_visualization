@@ -12,19 +12,20 @@ include_directories(
     manager/
 )
 add_executable(run ${SRC_FILES})
-# add_executable(run MACOSX_BUNDLE main)
+# add_executable(run MACOSX_BUNDLE ${SRC_FILES})
 
 
-#VTK Configuration
+#VTK Configuration - contains QT
 set(VTK_DIR /Users/EJ/libs/vtk/lib/cmake/vtk-8.0/)
 find_package(VTK REQUIRED)
 include(${VTK_USE_FILE})
 target_link_libraries(run ${VTK_LIBRARIES})
 
 # Qt Configuration
-find_package(Qt5Core REQUIRED)
-find_package(Qt5Gui)
-find_package(Qt5Widgets)
-find_package(Qt5OpenGL QUIET)
+# find_package(Qt5Core)
+# find_package(Qt5Gui)
+# find_package(Qt5Widgets)
+# find_package(Qt5OpenGL)
 
-target_link_libraries(run Qt5::Widgets)
+# target_link_libraries(run Qt5::Widgets)
+

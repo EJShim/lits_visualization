@@ -6,8 +6,6 @@
 #include <vtkProperty.h>
 #include <vtkCamera.h>
 
-
-
 E_Manager::E_Manager(){
     this->Initialize();
 }
@@ -46,10 +44,8 @@ void E_Manager::TestFunction(){
     cylinderActor->GetProperty()->SetColor(1.0000, 0.3882, 0.2784);
     cylinderActor->RotateX(30.0);
     cylinderActor->RotateY(-45.0);
-
        
     this->m_renderer->AddActor(cylinderActor);
-
     this->Redraw();
 }
 
