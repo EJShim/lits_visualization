@@ -31,12 +31,15 @@ QToolBar* E_Window::InitToolbar(){
     toolbar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     toolbar->setMovable(false);    
 
-    //Import Volume
-    QIcon icon = QIcon(":/images/pantone-2.png");
+    //Import Volume    
     QAction* import_action = new QAction(QIcon(":/images/pantone-2.png") ,QString("Import Volume"), this);
     toolbar->addAction(import_action);
     connect(import_action, SIGNAL(triggered()), this, SLOT(ImportVolume()));
 
+    //Run Segmentation
+    QAction* segmentation_action = new QAction(QIcon(":/images/edit-tools.png") ,QString("Run Segmentation"), this);
+    toolbar->addAction(segmentation_action);
+    connect(segmentation_action, SIGNAL(triggered()), this, SLOT(RunSegmentation()));
 
     return toolbar;
 }
