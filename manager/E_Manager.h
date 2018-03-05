@@ -1,4 +1,7 @@
 #include <QVTKWidget.h>
+#include <vtkSmartPointer.h>
+#include <vtkRenderWindow.h>
+#include <vtkRenderer.h>
 
 class E_Manager{
     public:
@@ -16,6 +19,15 @@ class E_Manager{
     public:
     void Initialize();
     void ClearMemory();
-
     void TestFunction();
+
+    //Initialize VTK Widgets
+    void SetVTKWidget(QVTKWidget* widget);
+
+    void Redraw();
+
+
+    protected:
+    vtkSmartPointer<vtkRenderer> m_renderer;
+    
 };

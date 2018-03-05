@@ -1,4 +1,6 @@
-#include <QMainWindow.h>
+#include <QMainWindow>
+#include <QVTKWidget.h>
+
 
 class E_Window : public QMainWindow{
     
@@ -12,6 +14,7 @@ class E_Window : public QMainWindow{
     void ImportVolume();
 
 
-
+    protected:
+    QVTKWidget* m_renderingWidget;
     
 };

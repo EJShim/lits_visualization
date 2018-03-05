@@ -1,7 +1,7 @@
 #include "E_Window.h"
 #include "E_Manager.h"
 #include <iostream>
-
+#include <QVBoxLayout>
 #include <QToolBar>
 
 E_Window::E_Window(QWidget* parent):QMainWindow(parent){
@@ -20,6 +20,21 @@ E_Window::E_Window(QWidget* parent):QMainWindow(parent){
     toolbar->addAction(import_action);
     connect(import_action, SIGNAL(triggered()), this, SLOT(ImportVolume()));
 
+
+    //Initialize VTK Widget
+    this->m_renderingWidget = new QVTKWidget;
+    E_Manager::Mgr()->SetVTKWidget(this->m_renderingWidget);
+
+    QWidget* centralWidget = new QWidget();
+    QVBoxLayout* centralLayout = new QVBoxLayout();
+    centralWidget->setLayout(centralLayout);
+    centralLayout->addWidget(this->m_renderingWidget);
+    this->setCentralWidget(centralWidget);
+    
+
+    //Initialize Test Function
+    E_Manager::Mgr()->TestFunction();
+
 }
 
 E_Window::~E_Window(){
@@ -27,7 +42,5 @@ E_Window::~E_Window(){
 }
 
 void E_Window::ImportVolume(){
-    std::cout << "Volume Import Triggered" << std::endl;
-
-    E_Manager::Mgr()->TestFunction();
+    std::cout << "Volume Import Triggered" << std::endl;    
 }
