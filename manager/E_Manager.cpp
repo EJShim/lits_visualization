@@ -8,7 +8,7 @@
 
 
 E_Manager::E_Manager(){
-    this->Initialize();    
+    this->Initialize();
 }
 
 E_Manager::~E_Manager(){

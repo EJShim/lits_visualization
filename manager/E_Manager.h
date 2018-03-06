@@ -40,6 +40,6 @@ class E_Manager{
 
 
     protected:
-    vtkSmartPointer<vtkRenderer> m_renderer[NUM_VIEW];
+    vtkSmartPointer<vtkRenderer> m_renderer[NUM_VIEW];    
     
 };
