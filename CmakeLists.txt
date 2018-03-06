@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.0)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -29,4 +29,10 @@ target_link_libraries(run ${VTK_LIBRARIES})
 # find_package(Qt5Widgets)
 # find_package(Qt5OpenGL)
 # target_link_libraries(run Qt5::Widgets)
+
+#ITK Confiugration
+set(ITK_DIR  /Users/EJ/libs/itk/lib/cmake/ITK-4.13/)
+find_package(ITK REQUIRED)
+include(${ITK_USE_FILE})
+target_link_libraries(run ${ITK_LIBRARIES})
 
