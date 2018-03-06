@@ -3,3 +3,8 @@
 C++, VTK, QT, ITK(with VTK-glue)
 
 QT5-backend VTK is required!
+
+
+# `lits_visualization`: LiTS Challenge Dataset Visualization
+
+# ![screen](screen.png)
