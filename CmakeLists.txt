@@ -16,6 +16,7 @@ include_directories(
 )
 add_executable(run ${SRC_FILES})
 # add_executable(run MACOSX_BUNDLE ${SRC_FILES})
+# add_executable(run WIN32 ${SRC_FILES})
 
 
 #VTK Configuration - contains QT

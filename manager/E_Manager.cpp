@@ -1,9 +1,5 @@
 #include "E_Manager.h"
 #include <iostream>
-#include <vtkCylinderSource.h>
-#include <vtkPolyDataMapper.h>
-#include <vtkActor.h>
-#include <vtkProperty.h>
 #include <vtkCamera.h>
 
 
