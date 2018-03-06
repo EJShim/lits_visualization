@@ -6,8 +6,9 @@
 #include <vtkProperty.h>
 #include <vtkCamera.h>
 
+
 E_Manager::E_Manager(){
-    this->Initialize();
+    this->Initialize();    
 }
 
 E_Manager::~E_Manager(){
@@ -45,15 +46,21 @@ void E_Manager::TestFunction(){
     cylinderActor->RotateX(30.0);
     cylinderActor->RotateY(-45.0);
        
-    this->m_renderer->AddActor(cylinderActor);
-    this->Redraw();
+    this->m_renderer[VIEW_MAIN]->AddActor(cylinderActor);
+    this->RedrawAll();
 }
 
-void E_Manager::SetVTKWidget(QVTKWidget* widget){
-    this->m_renderer = vtkSmartPointer<vtkRenderer>::New();
-    widget->GetRenderWindow()->AddRenderer(this->m_renderer);
+void E_Manager::SetVTKWidget(QVTKWidget* widget, int idx){
+    this->m_renderer[idx] = vtkSmartPointer<vtkRenderer>::New();
+    widget->GetRenderWindow()->AddRenderer(this->m_renderer[idx]);
 }
 
-void E_Manager::Redraw(){
-    this->m_renderer->GetRenderWindow()->Render();
+void E_Manager::Redraw(int idx){
+    this->m_renderer[idx]->GetRenderWindow()->Render();
+}
+
+void E_Manager::RedrawAll(){
+    for(int i=0 ; i<NUM_VIEW ; i++){
+        this->Redraw(i);
+    }
 }

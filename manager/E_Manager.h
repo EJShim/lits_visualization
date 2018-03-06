@@ -5,6 +5,10 @@
 
 class E_Manager{
     public:
+    enum {VIEW_MAIN, VIEW_AXL, VIEW_COR, VIEW_SAG};
+    static const int NUM_VIEW = 4;
+
+    public:
     E_Manager();
     ~E_Manager();
 
@@ -21,12 +25,13 @@ class E_Manager{
     void TestFunction();
 
     //Initialize VTK Widgets
-    void SetVTKWidget(QVTKWidget* widget);
+    void SetVTKWidget(QVTKWidget* widget, int idx);
 
-    void Redraw();
+    void Redraw(int idx);
+    void RedrawAll();
 
 
     protected:
-    vtkSmartPointer<vtkRenderer> m_renderer;
+    vtkSmartPointer<vtkRenderer> m_renderer[NUM_VIEW];
     
 };

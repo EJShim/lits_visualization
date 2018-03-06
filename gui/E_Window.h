@@ -1,6 +1,7 @@
 #include <QMainWindow>
 #include <QVTKWidget.h>
 #include <QToolBar>
+#include "E_Manager.h"
 
 
 class E_Window : public QMainWindow{
@@ -16,7 +17,7 @@ class E_Window : public QMainWindow{
     QWidget* InitCentralWidget();
 
     protected:
-    QVTKWidget* m_renderingWidget;
+    QVTKWidget* m_renderingWidget[E_Manager::NUM_VIEW];
 
     public Q_SLOTS:
     void ImportVolume();

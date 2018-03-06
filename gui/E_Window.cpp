@@ -1,7 +1,6 @@
 #include "E_Window.h"
-#include "E_Manager.h"
 #include <iostream>
-#include <QVBoxLayout>
+#include <QGridLayout>
 #include <QAction>
 
 E_Window::E_Window(QWidget* parent):QMainWindow(parent){
@@ -41,19 +40,27 @@ QToolBar* E_Window::InitToolbar(){
     toolbar->addAction(segmentation_action);
     connect(segmentation_action, SIGNAL(triggered()), this, SLOT(RunSegmentation()));
 
+
+
     return toolbar;
 }
 
 QWidget* E_Window::InitCentralWidget(){
     //Initialize VTK Widget
-    this->m_renderingWidget = new QVTKWidget;
-    E_Manager::Mgr()->SetVTKWidget(this->m_renderingWidget);
+    for(int i=0 ; i<E_Manager::NUM_VIEW ; i++){
+        this->m_renderingWidget[i] = new QVTKWidget;
+        E_Manager::Mgr()->SetVTKWidget(this->m_renderingWidget[i],i);
+    }
+    
     
     QWidget* centralWidget = new QWidget();
-    QVBoxLayout* centralLayout = new QVBoxLayout();
-    centralWidget->setLayout(centralLayout);
-    centralLayout->addWidget(this->m_renderingWidget);
+    QGridLayout* layout = new QGridLayout();
+    centralWidget->setLayout(layout);
 
+    layout->addWidget(this->m_renderingWidget[E_Manager::VIEW_MAIN], 0, 1);
+    layout->addWidget(this->m_renderingWidget[E_Manager::VIEW_AXL], 0, 2);
+    layout->addWidget(this->m_renderingWidget[E_Manager::VIEW_COR], 1, 1);
+    layout->addWidget(this->m_renderingWidget[E_Manager::VIEW_SAG], 1, 2);
 
 
     return centralWidget;
