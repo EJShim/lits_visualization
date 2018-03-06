@@ -22,5 +22,7 @@ class E_Window : public QMainWindow{
     public Q_SLOTS:
     void ImportVolume();
     void RunSegmentation();
+    ///temporary
+    void ImportGT();
     
 };

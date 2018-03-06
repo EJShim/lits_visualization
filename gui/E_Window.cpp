@@ -37,6 +37,10 @@ QToolBar* E_Window::InitToolbar(){
     toolbar->addAction(segmentation_action);
     connect(segmentation_action, SIGNAL(triggered()), this, SLOT(RunSegmentation()));
 
+    QAction* gt_import_action = new QAction(QIcon(":/images/document.png"), QString("Import Ground Truth(temp)"), this);
+    toolbar->addAction(gt_import_action);
+    connect(gt_import_action, SIGNAL(triggered()), this, SLOT(ImportGT()));
+
 
 
     return toolbar;
@@ -69,8 +73,7 @@ QWidget* E_Window::InitCentralWidget(){
 
 
 ////////////////////////////////////////////////////////////////////Action SLOTS////////////////////////////////////////////////////////
-void E_Window::ImportVolume(){
-    std::cout << "Volume Import Triggered" << std::endl;
+void E_Window::ImportVolume(){    
     QString fileName = QFileDialog::getOpenFileName(this, ("Open File"),"~/..",
                                                 ("volumes (*.dcm *.nii"));
 
@@ -85,4 +88,15 @@ void E_Window::ImportVolume(){
 
 void E_Window::RunSegmentation(){
     std::cout << "Run Segmentation" << std::endl;
+}
+
+void E_Window::ImportGT(){
+    QString fileName = QFileDialog::getOpenFileName(this, ("Open File"),"~/..",
+                                                ("volumes (*.dcm *.nii"));
+
+    if(fileName == "") return;
+
+    E_Manager::VolumeMgr()->ImportGroundTruth(fileName.toStdString());
+
+
 }

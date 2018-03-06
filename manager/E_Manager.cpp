@@ -46,12 +46,14 @@ void E_Manager::ClearMemory(){
 
 void E_Manager::SetVTKWidget(QVTKWidget* widget, int idx){
     this->m_renderer[idx] = vtkSmartPointer<vtkRenderer>::New();
+    if(idx != 0)
+        this->m_renderer[idx]->GetActiveCamera()->ParallelProjectionOn();
     widget->GetRenderWindow()->AddRenderer(this->m_renderer[idx]);
 }
 
 void E_Manager::Redraw(int idx){
     this->m_renderer[idx]->GetRenderWindow()->Render();
-    this->m_renderer[idx]->ResetCamera();
+    this->m_renderer[idx]->ResetCamera();    
 }
 
 void E_Manager::RedrawAll(){

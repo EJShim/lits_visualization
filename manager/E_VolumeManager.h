@@ -16,15 +16,27 @@
 #include <vtkImageSliceMapper.h>
 #include <vtkImageSlice.h>
 
+#include <itkImage.h>
+#include <itkImageFileReader.h>
+#include <itkImageToVTKImageFilter.h>
+
 class E_VolumeManager{
     public:
     enum{AXL, COR, SAG};
     static const int NUMSLICE = 3;
+
+    ///ITK Image Type
+    typedef itk::Image<short, 3> ImageType;
+    typedef itk::ImageFileReader<ImageType> VolumeReader;
+    typedef itk::ImageToVTKImageFilter<ImageType> itkVtkConverter;
+
+    public:
     E_VolumeManager();
     ~E_VolumeManager();
 
     public:
     void ImportVolume(std::string path);
+    void ImportGroundTruth(std::string path);
 
 
     protected:
@@ -40,9 +52,18 @@ class E_VolumeManager{
     vtkSmartPointer<vtkVolume> m_volume;
 
     //Reslice Volume
-
     vtkSmartPointer<vtkImageSliceMapper> m_resliceMapper[NUMSLICE];
     vtkSmartPointer<vtkImageSlice> m_resliceActor[NUMSLICE];
+
+
+    ///Ground-truth volume
+    vtkSmartPointer<vtkImageData> m_gimageData;
+    vtkSmartPointer<vtkSmartVolumeMapper> m_gvolumeMapper;
+    vtkSmartPointer<vtkVolume> m_gvolume;
+
+    ///Ground-truth reslice volume
+    vtkSmartPointer<vtkImageSliceMapper> m_gresliceMapper[NUMSLICE];
+    vtkSmartPointer<vtkImageSlice> m_gresliceActor[NUMSLICE];
 
 };
 
