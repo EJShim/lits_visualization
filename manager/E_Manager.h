@@ -1,7 +1,10 @@
+
 #include <QVTKWidget.h>
 #include <vtkSmartPointer.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderer.h>
+
+#include "E_VolumeManager.h"
 
 class E_Manager{
     public:
@@ -14,15 +17,20 @@ class E_Manager{
 
     private:
     static E_Manager* m_instance;
+    static E_VolumeManager* m_volumeManager;
+
     static void Destroy(){delete m_instance;}
+    static void DestroyVolumeManager(){delete m_volumeManager;}
 
     public:
     static E_Manager* Mgr();
+    static E_VolumeManager* VolumeMgr();
 
     public:
     void Initialize();
     void ClearMemory();
-    void TestFunction();
+
+    vtkRenderer* GetRenderer(int idx){return this->m_renderer[idx];}
 
     //Initialize VTK Widgets
     void SetVTKWidget(QVTKWidget* widget, int idx);

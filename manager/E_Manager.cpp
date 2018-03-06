@@ -16,6 +16,7 @@ E_Manager::~E_Manager(){
 }
 
 E_Manager* E_Manager::m_instance;
+E_VolumeManager* E_Manager::m_volumeManager;
 
 E_Manager* E_Manager::Mgr(){
     if(m_instance == NULL){
@@ -23,6 +24,15 @@ E_Manager* E_Manager::Mgr(){
         atexit(Destroy);
     }
     return m_instance;
+}
+
+E_VolumeManager* E_Manager::VolumeMgr(){
+    if(m_volumeManager == NULL){
+        m_volumeManager = new E_VolumeManager();
+        atexit(DestroyVolumeManager);
+    }
+
+    return m_volumeManager;
 }
 
 void E_Manager::Initialize(){
@@ -33,22 +43,6 @@ void E_Manager::ClearMemory(){
 
 }
 
-void E_Manager::TestFunction(){    
-    vtkSmartPointer<vtkCylinderSource> cylinder = vtkSmartPointer<vtkCylinderSource>::New();
-    cylinder->SetResolution(8);
-    
-    vtkSmartPointer<vtkPolyDataMapper> cylinderMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-    cylinderMapper->SetInputConnection(cylinder->GetOutputPort());
-
-    vtkSmartPointer<vtkActor> cylinderActor = vtkSmartPointer<vtkActor>::New();
-    cylinderActor->SetMapper(cylinderMapper);
-    cylinderActor->GetProperty()->SetColor(1.0000, 0.3882, 0.2784);
-    cylinderActor->RotateX(30.0);
-    cylinderActor->RotateY(-45.0);
-       
-    this->m_renderer[VIEW_MAIN]->AddActor(cylinderActor);
-    this->RedrawAll();
-}
 
 void E_Manager::SetVTKWidget(QVTKWidget* widget, int idx){
     this->m_renderer[idx] = vtkSmartPointer<vtkRenderer>::New();
@@ -57,6 +51,7 @@ void E_Manager::SetVTKWidget(QVTKWidget* widget, int idx){
 
 void E_Manager::Redraw(int idx){
     this->m_renderer[idx]->GetRenderWindow()->Render();
+    this->m_renderer[idx]->ResetCamera();
 }
 
 void E_Manager::RedrawAll(){

@@ -2,6 +2,7 @@
 #include <iostream>
 #include <QGridLayout>
 #include <QAction>
+#include <QFileDialog>
 
 E_Window::E_Window(QWidget* parent):QMainWindow(parent){
     //Show in maximum size
@@ -11,11 +12,7 @@ E_Window::E_Window(QWidget* parent):QMainWindow(parent){
     this->addToolBar(Qt::TopToolBarArea, this->InitToolbar());
     
     //Initialize Central WIdget    
-    this->setCentralWidget(this->InitCentralWidget());
-    
-
-    //Initialize Test Function
-    E_Manager::Mgr()->TestFunction();
+    this->setCentralWidget(this->InitCentralWidget());    
 
 }
 
@@ -53,10 +50,13 @@ QWidget* E_Window::InitCentralWidget(){
     }
     
     
+    // Initialize Central Widgets
     QWidget* centralWidget = new QWidget();
     QGridLayout* layout = new QGridLayout();
     centralWidget->setLayout(layout);
 
+
+    //Add To Central Widget(Grid Layout)
     layout->addWidget(this->m_renderingWidget[E_Manager::VIEW_MAIN], 0, 1);
     layout->addWidget(this->m_renderingWidget[E_Manager::VIEW_AXL], 0, 2);
     layout->addWidget(this->m_renderingWidget[E_Manager::VIEW_COR], 1, 1);
@@ -68,15 +68,19 @@ QWidget* E_Window::InitCentralWidget(){
 
 
 
-
-
-
-
-
-
 ////////////////////////////////////////////////////////////////////Action SLOTS////////////////////////////////////////////////////////
 void E_Window::ImportVolume(){
-    std::cout << "Volume Import Triggered" << std::endl;    
+    std::cout << "Volume Import Triggered" << std::endl;
+    QString fileName = QFileDialog::getOpenFileName(this, ("Open File"),"~/..",
+                                                ("volumes (*.dcm *.nii"));
+
+    // If file is not selected
+    if(fileName == ""){
+        return;
+    }
+
+    // Import Volume                                        
+    E_Manager::VolumeMgr()->ImportVolume(fileName.toStdString());
 }
 
 void E_Window::RunSegmentation(){
