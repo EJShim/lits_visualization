@@ -1,4 +1,3 @@
-
 #include <QVTKWidget.h>
 #include <vtkSmartPointer.h>
 #include <vtkRenderWindow.h>

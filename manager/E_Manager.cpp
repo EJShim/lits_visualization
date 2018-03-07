@@ -56,4 +56,5 @@ void E_Manager::RedrawAll(){
     for(int i=0 ; i<NUM_VIEW ; i++){
         this->Redraw(i);
     }
+            
 }

@@ -17,7 +17,7 @@ include_directories(
     gui/    
     manager/
 )
-# add_executable(run ${SRC_FILES})
+
 if(${PUBLISH})
     if (WIN32)
         add_executable(run WIN32 ${SRC_FILES})
@@ -36,6 +36,7 @@ endif(${PUBLISH})
 #VTK Configuration - contains QT
 find_package(VTK REQUIRED)
 include(${VTK_USE_FILE})
+
 target_link_libraries(run ${VTK_LIBRARIES})
 
 #ITK Confiugration

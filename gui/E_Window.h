@@ -1,6 +1,6 @@
 #include <QMainWindow>
-#include <QVTKWidget.h>
 #include <QToolBar>
+#include <QVTKWidget.h>
 #include "E_Manager.h"
 
 
