@@ -1,6 +1,7 @@
 #include <QApplication>
 #include <QFile>
 #include "E_Window.h"
+#include <E_Volume.h>
 
 int main(int argc, char *argv[])
 {

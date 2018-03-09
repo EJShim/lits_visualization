@@ -1,7 +1,11 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.3)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+PROJECT(Lit_seg)
+set(PUBLISH FALSE)
+
 
 set(SRC_FILES 
     main
@@ -11,16 +15,16 @@ set(SRC_FILES
     manager/E_VolumeManager.cpp
 )
 
-set(PUBLISH FALSE)
-
 include_directories(
     gui/    
     manager/
+    core/
 )
 
+#ADD EXECUTABLE
 if(${PUBLISH})
     if (WIN32)
-        add_executable(run WIN32 ${SRC_FILES})
+        add_executable(${PROJECT_NAME} WIN32 ${SRC_FILES})
     endif (WIN32)
     if (APPLE)
         set(MACOSX_BUNDLE_ICON_FILE pantone-2.icns)
@@ -29,18 +33,26 @@ if(${PUBLISH})
         add_executable(run MACOSX_BUNDLE ${myApp_ICON} ${SRC_FILES})
     endif (APPLE)
 else(${PUBLISH})
-    add_executable(run ${myApp_ICON} ${SRC_FILES})
+    add_executable(${PROJECT_NAME} ${myApp_ICON} ${SRC_FILES})
 endif(${PUBLISH})
 
 
-#VTK Configuration - contains QT
+#Link Internal Libraries
+add_subdirectory(core)
+target_link_libraries(${PROJECT_NAME} Core)
+
+#Link External Libraries
 find_package(VTK REQUIRED)
-include(${VTK_USE_FILE})
-
-target_link_libraries(run ${VTK_LIBRARIES})
-
-#ITK Confiugration
 find_package(ITK REQUIRED)
-include(${ITK_USE_FILE})
-target_link_libraries(run ${ITK_LIBRARIES})
+
+set(EXTERNAL_INCLUDES
+    ${VTK_USE_FILE}
+    ${ITK_USE_FILE}
+)
+set(EXTERNAL_TARGET_LIBRARIES
+    ${VTK_LIBRARIES}
+    ${ITK_LIBRARIES}
+)
+include(${EXTERNAL_INCLUDES})
+target_link_libraries(${PROJECT_NAME} ${EXTERNAL_TARGET_LIBRARIES})
 
