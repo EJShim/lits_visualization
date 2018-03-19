@@ -4,8 +4,10 @@
 
 void E_SegmentationThread::run(){
 
-    for(int i=0 ; i<10 ; i++){
-        sleep(1);
+    int* dims = m_imageData->GetDimensions();
+
+    for(int i=0 ; i<dims[2] ; i++){     
+        msleep(500);
         emit onCalculated(i);
     }
 

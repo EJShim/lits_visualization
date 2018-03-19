@@ -58,10 +58,10 @@ class E_Volume : public vtkVolume{
     void SetImageData(vtkSmartPointer<vtkImageData>);
     void SetGroundTruth(vtkSmartPointer<vtkImageData>);
 
+    vtkSmartPointer<vtkImageData> GetImageData(){return m_imageData;}
     vtkSmartPointer<vtkImageSlice> GetImageSlice(int idx){return m_imageSlice[idx];}
     vtkSmartPointer<vtkVolume> GetGroundTruthVolume(){return m_gt_volume;}
     vtkSmartPointer<vtkImageSlice> GetGroundTruthImageSlice(int idx){return m_gt_imageSlice[idx];}
-
 
     void SetSlice(int idx, int sliceNum);
     void ForwardSlice(int idx);

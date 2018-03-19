@@ -5,7 +5,7 @@
 #include <QGridLayout>
 #include <QAction>
 #include <QFileDialog>
-#include <QCheckBox>
+#include <QTimer>
 
 E_Window::E_Window(QWidget* parent):QMainWindow(parent){
     //Show in maximum size
@@ -58,19 +58,22 @@ QGroupBox* E_Window::Init3DSliceGroup(){
     QGroupBox* groupbox = new QGroupBox(tr("3d slice"));
     groupbox->setFlat(true);
 
-    QCheckBox* checkbox_axl = new QCheckBox(tr("Axial"));
-    QCheckBox* checkbox_cor = new QCheckBox(tr("Coronal"));
-    QCheckBox* checkbox_sag = new QCheckBox(tr("Sagittal"));
+    m_checkboxAxl = new QCheckBox(tr("Axial"));
+    m_checkboxCor = new QCheckBox(tr("Coronal"));
+    m_checkboxSag = new QCheckBox(tr("Sagittal"));
 
-    checkbox_axl->setChecked(true);
-    checkbox_cor->setChecked(true);
-    checkbox_sag->setChecked(true);
+    m_checkboxAxl->setChecked(true);
+    m_checkboxCor->setChecked(true);
+    m_checkboxSag->setChecked(true);
+
+    connect(m_checkboxAxl, SIGNAL(stateChanged(int)), this, SLOT(ToggleAxlSlice(int)));
+    connect(m_checkboxCor, SIGNAL(stateChanged(int)), this, SLOT(ToggleCorSlice(int)));
+    connect(m_checkboxSag, SIGNAL(stateChanged(int)), this, SLOT(ToggleSagSlice(int)));
 
     QVBoxLayout *vbox = new QVBoxLayout;
-    vbox->addWidget(checkbox_axl);
-    vbox->addWidget(checkbox_cor);
-    vbox->addWidget(checkbox_sag);
-    vbox->addStretch(1);
+    vbox->addWidget(m_checkboxAxl);
+    vbox->addWidget(m_checkboxCor);
+    vbox->addWidget(m_checkboxSag);    
     groupbox->setLayout(vbox);
 
 
@@ -118,15 +121,40 @@ void E_Window::ImportVolume(){
 }
 
 void E_Window::RunSegmentation(){
+
+    m_checkboxAxl->setCheckState(Qt::Unchecked);
+    m_checkboxCor->setCheckState(Qt::Unchecked);
+    m_checkboxSag->setCheckState(Qt::Checked);
+
+    E_Manager::VolumeMgr()->GetCurrentVolume()->SetSlice(2, 0);
+    E_Manager::Mgr()->Redraw(0);
+    E_Manager::Mgr()->Redraw(3);
+
+
     E_SegmentationThread *segThread = new E_SegmentationThread();
     connect(segThread, &E_SegmentationThread::onCalculated, this, &E_Window::OnSegmentationCalculated);
+    connect(segThread, &E_SegmentationThread::finished, this, &E_Window::OnFinishedSegmentation);
 
+    //Set Input Data
+    segThread->SetImageData(E_Manager::VolumeMgr()->GetCurrentVolume()->GetImageData());
     segThread->start();
+
+    // QTimer * timer = new QTimer(this);
+    // connect(timer, SIGNAL(timeout()), this, SLOT(OnTimeOut()));
+    // timer->start(500);
 }
 
-void E_Window::OnSegmentationCalculated(int i){
-    std::cout << i << std::endl;
+void E_Window::OnSegmentationCalculated(int i){    
+    // Update Animation     
+    E_Manager::VolumeMgr()->GetCurrentVolume()->SetSlice(2, i);
+
+    E_Manager::Mgr()->Redraw(0);
+    E_Manager::Mgr()->Redraw(3);
     
+}
+
+void E_Window::OnFinishedSegmentation(){
+    std::cout << "segmentation finished" << std::endl;    
 }
 
 
@@ -138,6 +166,21 @@ void E_Window::ImportGT(){
     if(fileName == "") return;
 
     E_Manager::VolumeMgr()->ImportGroundTruth(fileName.toStdString());
+}
 
+void E_Window::ToggleAxlSlice(int state){
+    E_Manager::VolumeMgr()->Toggle3DSlice(0, state);
+}
 
+void E_Window::ToggleCorSlice(int state){
+    E_Manager::VolumeMgr()->Toggle3DSlice(1, state);
+}
+
+void E_Window::ToggleSagSlice(int state){
+    E_Manager::VolumeMgr()->Toggle3DSlice(2, state);
+}
+
+void E_Window::OnTimeOut(){
+    E_Manager::Mgr()->Redraw(0);
+    E_Manager::Mgr()->Redraw(3);
 }

@@ -108,3 +108,23 @@ void E_VolumeManager::BackwardSlice(int idx){
     E_Manager::Mgr()->Redraw(0);
     E_Manager::Mgr()->Redraw(idx+1);
 }
+
+void E_VolumeManager::Toggle3DSlice(int idx, int state){
+    if(m_volume == NULL) return;
+    if(m_volume->GetGroundTruthVolume() == NULL) return;
+    
+
+    vtkSmartPointer<vtkImageSlice> slice = m_volume->GetGroundTruthImageSlice(idx);
+    if(state == 0){ ///Show        
+        E_Manager::Mgr()->GetRenderer(E_Manager::VIEW_MAIN)->RemoveViewProp(slice);
+    }else if(state == 2){//hide
+        E_Manager::Mgr()->GetRenderer(E_Manager::VIEW_MAIN)->AddViewProp(slice);
+    }else{
+        return;
+    }
+
+    E_Manager::Mgr()->Redraw(0);
+    E_Manager::Mgr()->Redraw(idx+1);
+
+    return;
+}

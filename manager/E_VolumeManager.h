@@ -56,6 +56,11 @@ class E_VolumeManager{
     void ForwardSlice(int idx);
     void BackwardSlice(int idx);
 
+    void Toggle3DSlice(int idx, int state);
+
+
+    vtkSmartPointer<E_Volume> GetCurrentVolume(){return m_volume;}
+
 };
 
 #endif //E_VOLUMEMANAGER_H

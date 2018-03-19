@@ -185,6 +185,7 @@ void E_Volume::SetGroundTruth(vtkSmartPointer<vtkImageData> imageData){
     }    
 }
 
+
 void E_Volume::SetSlice(int idx, int sliceNum){
     if(m_sliceMapper[idx] == NULL) return;
     m_sliceMapper[idx]->SetSliceNumber(sliceNum);
