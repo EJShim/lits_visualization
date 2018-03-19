@@ -22,3 +22,18 @@ void E_InteractorStyle::OnMouseWheelBackward()
 {
     E_Manager::VolumeMgr()->BackwardSlice(this->m_idx);
 }
+
+void E_InteractorStyle::OnLeftButtonDown()
+{
+    
+}
+
+void E_InteractorStyle::OnLeftButtonUp()
+{
+    
+}
+
+void E_InteractorStyle::OnMouseMove()
+{
+    
+}

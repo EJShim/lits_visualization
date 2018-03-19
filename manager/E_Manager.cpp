@@ -52,18 +52,34 @@ void E_Manager::SetVTKWidget(QVTKWidget* widget, int idx){
         vtkSmartPointer<E_InteractorStyle> interactorstyle = vtkSmartPointer<E_InteractorStyle>::New();
         interactorstyle->SetIdx(idx-1);
         widget->GetRenderWindow()->GetInteractor()->SetInteractorStyle(interactorstyle);
+        
+        if(idx == 1){
+            this->m_renderer[idx]->GetActiveCamera()->Azimuth(-90.0);
+        }else if(idx == 2){
+            this->m_renderer[idx]->GetActiveCamera()->Elevation(90.0);   
+        }
     }
+     
+    
+
+
+
     widget->GetRenderWindow()->AddRenderer(this->m_renderer[idx]);
 }
 
-void E_Manager::Redraw(int idx){
+void E_Manager::Redraw(int idx, bool reset){
     this->m_renderer[idx]->GetRenderWindow()->Render();
-    this->m_renderer[idx]->ResetCamera();    
+    
+    if(reset){
+        this->m_renderer[idx]->ResetCamera(); 
+        if(idx != 0){
+            this->m_renderer[idx]->GetActiveCamera()->Zoom(1.5);
+        }
+    }
 }
 
-void E_Manager::RedrawAll(){
+void E_Manager::RedrawAll(bool reset){
     for(int i=0 ; i<NUM_VIEW ; i++){
-        this->Redraw(i);
-    }
-            
+        this->Redraw(i, reset);
+    }           
 }

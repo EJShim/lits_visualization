@@ -34,8 +34,8 @@ class E_Manager{
     //Initialize VTK Widgets
     void SetVTKWidget(QVTKWidget* widget, int idx);
 
-    void Redraw(int idx);
-    void RedrawAll();
+    void Redraw(int idx, bool reset=false);
+    void RedrawAll(bool reset=false);
 
 
     protected:

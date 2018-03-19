@@ -59,11 +59,11 @@ void E_VolumeManager::ImportVolume(std::string path){
         E_Manager::Mgr()->GetRenderer(i+1)->AddViewProp(slice);
     }
 
-    E_Manager::Mgr()->RedrawAll();    
+    E_Manager::Mgr()->RedrawAll(true);    
 }
 
 void E_VolumeManager::ImportGroundTruth(std::string path){
-
+    if(m_volume == NULL) return;
 
     // Make ITK Image Data    
     VolumeReader::Pointer reader = VolumeReader::New();
@@ -88,15 +88,23 @@ void E_VolumeManager::ImportGroundTruth(std::string path){
         E_Manager::Mgr()->GetRenderer(i+1)->AddViewProp(slice);
     }
 
-    E_Manager::Mgr()->RedrawAll();    
+    E_Manager::Mgr()->RedrawAll(true);    
 }
 
 void E_VolumeManager::ForwardSlice(int idx){
+    if(m_volume == NULL) return;
+
     m_volume->ForwardSlice(idx);
-    E_Manager::Mgr()->RedrawAll();
+
+    E_Manager::Mgr()->Redraw(0);
+    E_Manager::Mgr()->Redraw(idx+1);
 }
 
 void E_VolumeManager::BackwardSlice(int idx){
+    if(m_volume == NULL) return;
+
     m_volume->BackwardSlice(idx);
-    E_Manager::Mgr()->RedrawAll();
+    
+    E_Manager::Mgr()->Redraw(0);
+    E_Manager::Mgr()->Redraw(idx+1);
 }

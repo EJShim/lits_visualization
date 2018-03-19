@@ -20,6 +20,9 @@ class E_InteractorStyle : public vtkInteractorStyleImage{
 
     virtual void OnMouseWheelForward();
     virtual void OnMouseWheelBackward();
+    virtual void OnLeftButtonDown();
+    virtual void OnLeftButtonUp();
+    virtual void OnMouseMove();
 
 };
 

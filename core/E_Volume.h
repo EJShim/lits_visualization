@@ -24,6 +24,7 @@ class E_Volume : public vtkVolume{
     ~E_Volume();
 
     protected:
+
     vtkSmartPointer<vtkImageData> m_imageData;
 
     /// Original Volume
@@ -62,6 +63,7 @@ class E_Volume : public vtkVolume{
     vtkSmartPointer<vtkImageSlice> GetGroundTruthImageSlice(int idx){return m_gt_imageSlice[idx];}
 
 
+    void SetSlice(int idx, int sliceNum);
     void ForwardSlice(int idx);
     void BackwardSlice(int idx);
 

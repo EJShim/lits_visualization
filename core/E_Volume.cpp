@@ -185,22 +185,36 @@ void E_Volume::SetGroundTruth(vtkSmartPointer<vtkImageData> imageData){
     }    
 }
 
+void E_Volume::SetSlice(int idx, int sliceNum){
+    if(m_sliceMapper[idx] == NULL) return;
+    m_sliceMapper[idx]->SetSliceNumber(sliceNum);
+
+    if(m_gt_sliceMapper[idx] == NULL) return;
+    m_gt_sliceMapper[idx]->SetSliceNumber(sliceNum);
+    
+}
 
 void E_Volume::ForwardSlice(int idx){
+    
+    if(m_sliceMapper[idx] == NULL) return;
+
+
     int sliceNum = m_sliceMapper[idx]->GetSliceNumber();
     if(sliceNum >= m_sliceMapper[idx]->GetSliceNumberMaxValue()){
         return;
     }
 
-    m_sliceMapper[idx]->SetSliceNumber(sliceNum+1);
+    SetSlice(idx, sliceNum + 5);
 }
 
 
 void E_Volume::BackwardSlice(int idx){
+    if(m_sliceMapper[idx] == NULL) return;
+
     int sliceNum = m_sliceMapper[idx]->GetSliceNumber();
     if(sliceNum <= m_sliceMapper[idx]->GetSliceNumberMinValue()){
         return;
     }
 
-    m_sliceMapper[idx]->SetSliceNumber(sliceNum-1);
+    SetSlice(idx, sliceNum - 5);
 }
