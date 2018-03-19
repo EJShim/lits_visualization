@@ -11,7 +11,6 @@
 #include <vtkPiecewiseFunction.h>
 #include <vtkVolumeProperty.h>
 #include <vtkSmartVolumeMapper.h>
-#include <vtkVolume.h>
 #include <vtkImageProperty.h>
 #include <vtkImageSliceMapper.h>
 #include <vtkImageSlice.h>
@@ -19,6 +18,8 @@
 #include <itkImage.h>
 #include <itkImageFileReader.h>
 #include <itkImageToVTKImageFilter.h>
+
+#include "E_Volume.h"
 
 class E_VolumeManager{
     public:
@@ -34,36 +35,26 @@ class E_VolumeManager{
     E_VolumeManager();
     ~E_VolumeManager();
 
-    public:
-    void ImportVolume(std::string path);
-    void ImportGroundTruth(std::string path);
 
 
-    protected:
-    //Volume Properties
-    vtkSmartPointer<vtkColorTransferFunction> m_colorFunc;
-    vtkSmartPointer<vtkPiecewiseFunction> m_opacFunc;
-    vtkSmartPointer<vtkVolumeProperty> m_volumeProperty;
-    vtkSmartPointer<vtkImageProperty> m_imageProperty;
-    
-    //Volume 
-    vtkSmartPointer<vtkImageData> m_imageData;
-    vtkSmartPointer<vtkSmartVolumeMapper> m_volumeMapper;
-    vtkSmartPointer<vtkVolume> m_volume;
-
-    //Reslice Volume
-    vtkSmartPointer<vtkImageSliceMapper> m_resliceMapper[NUMSLICE];
-    vtkSmartPointer<vtkImageSlice> m_resliceActor[NUMSLICE];
-
+    protected:   
+    vtkSmartPointer<E_Volume> m_volume;
 
     ///Ground-truth volume
     vtkSmartPointer<vtkImageData> m_gimageData;
     vtkSmartPointer<vtkSmartVolumeMapper> m_gvolumeMapper;
-    vtkSmartPointer<vtkVolume> m_gvolume;
+    vtkSmartPointer<E_Volume> m_gvolume;
 
     ///Ground-truth reslice volume
     vtkSmartPointer<vtkImageSliceMapper> m_gresliceMapper[NUMSLICE];
     vtkSmartPointer<vtkImageSlice> m_gresliceActor[NUMSLICE];
+
+    public:
+    void ImportVolume(std::string path);
+    void ImportGroundTruth(std::string path);
+
+    void ForwardSlice(int idx);
+    void BackwardSlice(int idx);
 
 };
 

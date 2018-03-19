@@ -1,6 +1,9 @@
 #include "E_Manager.h"
+
 #include <iostream>
 #include <vtkCamera.h>
+
+#include "E_InteractorStyle.h"
 
 
 E_Manager::E_Manager(){
@@ -42,8 +45,14 @@ void E_Manager::ClearMemory(){
 
 void E_Manager::SetVTKWidget(QVTKWidget* widget, int idx){
     this->m_renderer[idx] = vtkSmartPointer<vtkRenderer>::New();
-    if(idx != 0)
+    if(idx != 0){
         this->m_renderer[idx]->GetActiveCamera()->ParallelProjectionOn();
+
+        //Set 2D Interactor Style
+        vtkSmartPointer<E_InteractorStyle> interactorstyle = vtkSmartPointer<E_InteractorStyle>::New();
+        interactorstyle->SetIdx(idx-1);
+        widget->GetRenderWindow()->GetInteractor()->SetInteractorStyle(interactorstyle);
+    }
     widget->GetRenderWindow()->AddRenderer(this->m_renderer[idx]);
 }
 
