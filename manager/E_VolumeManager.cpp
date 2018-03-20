@@ -18,17 +18,13 @@ E_VolumeManager::~E_VolumeManager(){
 
 }
 
-
-void E_VolumeManager::ImportVolume(std::string path){    
-
-
+void E_VolumeManager::ImportVolume(std::string path){
     // Make ITK Image Data    
     VolumeReader::Pointer reader = VolumeReader::New();
     reader->SetFileName(path);
     reader->Update();
     ImageType::Pointer itkImageData = reader->GetOutput();
     
-
     // Convert to vtkimagedata
     typedef itk::ImageToVTKImageFilter<ImageType> itkVtkConverter;
     itkVtkConverter::Pointer conv = itkVtkConverter::New();
@@ -38,20 +34,16 @@ void E_VolumeManager::ImportVolume(std::string path){
     //Make Volume
     if(m_volume == NULL){
         m_volume = vtkSmartPointer<E_Volume>::New();
+        E_Manager::Mgr()->GetRenderer(E_Manager::VIEW_MAIN)->AddViewProp(m_volume);
     }
-
     m_volume->SetImageData(conv->GetOutput());
-
-
-    E_Manager::Mgr()->GetRenderer(E_Manager::VIEW_MAIN)->AddViewProp(m_volume);
-
     
     for(int i=0 ; i<NUMSLICE ; i++){
         vtkSmartPointer<vtkImageSlice> slice = m_volume->GetImageSlice(i);
         E_Manager::Mgr()->GetRenderer(i+1)->AddViewProp(slice);
     }
 
-    E_Manager::Mgr()->RedrawAll(true);    
+    E_Manager::Mgr()->RedrawAll(true);
 }
 
 void E_VolumeManager::ImportGroundTruth(std::string path){
@@ -69,9 +61,11 @@ void E_VolumeManager::ImportGroundTruth(std::string path){
     conv->SetInput(itkImageData);
     conv->Update();
     
+    //Update GT Image to the volume
     m_volume->SetGroundTruth(conv->GetOutput());
-    E_Manager::Mgr()->GetRenderer(0)->AddViewProp(m_volume->GetGroundTruthVolume());
 
+    // Add To Renderer
+    E_Manager::Mgr()->GetRenderer(0)->AddViewProp(m_volume->GetGroundTruthVolume());
     for(int i=0 ; i<3 ; i++){
         vtkSmartPointer<vtkImageSlice> slice = m_volume->GetGroundTruthImageSlice(i);
         E_Manager::Mgr()->GetRenderer(0)->AddViewProp(slice);
@@ -141,6 +135,7 @@ void E_VolumeManager::MakeBlankGroundTruth(){
     std::copy_n(zero_tensor.tensor<float,3>().data(), zero_tensor.tensor<float,3>().size(), pointer);
 
     m_volume->SetGroundTruth(croppedVolume);
+    
     //Show Ground Truth Volume
     E_Manager::Mgr()->GetRenderer(0)->AddViewProp(m_volume->GetGroundTruthVolume());
     for(int i=0 ; i<3 ; i++){
