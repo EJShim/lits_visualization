@@ -154,6 +154,7 @@ void E_Window::OnSegmentationCalculated(int i, tensorflow::Tensor t){
     // Update Animation    
     E_Manager::VolumeMgr()->GetCurrentVolume()->SetSlice(2, i);
     E_Manager::VolumeMgr()->GetCurrentVolume()->AssignGroundTruthVolume(i, t);
+    E_Manager::VolumeMgr()->UpdateGTVolume();
 
     // E_Manager::Mgr()->Redraw(0);
     // E_Manager::Mgr()->Redraw(3);

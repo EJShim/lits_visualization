@@ -30,6 +30,9 @@ class E_VolumeManager{
 
 
     protected:   
+    bool m_bVolumeInRenderer;
+    bool m_bGTInRenderer;
+    
     vtkSmartPointer<E_Volume> m_volume;
 
     public:
@@ -47,6 +50,8 @@ class E_VolumeManager{
     //Make Empty image data
     void MakeBlankGroundTruth();
 
+    /// Because of bug
+    void UpdateGTVolume();
 
     vtkSmartPointer<E_Volume> GetCurrentVolume(){return m_volume;}
 
