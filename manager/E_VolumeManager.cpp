@@ -6,7 +6,6 @@
 #include <vtkImageData.h>
 
 #include <itkNiftiImageIO.h>
-
 #include "tensorflow/core/framework/tensor.h"
 
 
