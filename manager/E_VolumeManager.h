@@ -4,16 +4,8 @@
 #include <iostream>
 
 #include <vtkSmartPointer.h>
-#include <vtkMatrix4x4.h>
 
-#include <vtkImageData.h>
-#include <vtkColorTransferFunction.h>
-#include <vtkPiecewiseFunction.h>
-#include <vtkVolumeProperty.h>
-#include <vtkSmartVolumeMapper.h>
-#include <vtkImageProperty.h>
-#include <vtkImageSliceMapper.h>
-#include <vtkImageSlice.h>
+
 
 #include <itkImage.h>
 #include <itkImageFileReader.h>
@@ -38,19 +30,7 @@ class E_VolumeManager{
 
 
     protected:   
-    vtkSmartPointer<E_Volume> m_volume;    
-
-    ///Ground-truth volume
-    vtkSmartPointer<vtkImageData> m_gimageData;
-    vtkSmartPointer<vtkSmartVolumeMapper> m_gvolumeMapper;
-    vtkSmartPointer<E_Volume> m_gvolume;
-
-    ///Ground-truth reslice volume
-    vtkSmartPointer<vtkImageSliceMapper> m_gresliceMapper[NUMSLICE];
-    vtkSmartPointer<vtkImageSlice> m_gresliceActor[NUMSLICE];
-
-
-    
+    vtkSmartPointer<E_Volume> m_volume;
 
     public:
     //Import Data

@@ -23,17 +23,16 @@ E_SegmentationThread::~E_SegmentationThread(){
 void E_SegmentationThread::process(){
     if(m_imageData == NULL) return;
 
-
     qRegisterMetaType<tensorflow::Tensor>("tensorflow::Tensor");
 
     //temp - use resource in the future
-    std::string path = "/Users/EJ/Projects/lits_visualization/resources/weights";
+    std::string path = "/Users/ej/projects/tf_cpp_test/weights/tf_converted_with_preprocessing";
     tensorflow::SavedModelBundle bundle;
     //why should I do tensorflow:: here??
     tensorflow::LoadSavedModel(tensorflow::SessionOptions(), tensorflow::RunOptions(), path, {"serve"}, &bundle);
     tensorflow::Session* session = bundle.session.get();
     
-    for(int z=380; z<390 ; z++){
+    for(int z=380; z<382 ; z++){
         vtkSmartPointer<vtkImageData> slice = GetSingleBatchImage(z);
         tensorflow::Tensor singleBatch = ConvertImageToTensor(slice);
 

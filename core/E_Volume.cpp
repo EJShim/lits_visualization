@@ -38,14 +38,16 @@ E_Volume::~E_Volume(){
 }
 
 void E_Volume::SetImageData(vtkSmartPointer<vtkImageData> imageData){
-    m_imageData = vtkSmartPointer<vtkImageData>::New();
+    if(m_imageData == NULL) m_imageData = vtkSmartPointer<vtkImageData>::New();
+    
     m_imageData->DeepCopy(imageData);
 
     double* scalarRange = m_imageData->GetScalarRange();
 
-
     if(m_colorFunction == NULL){
         m_colorFunction = vtkSmartPointer<vtkColorTransferFunction>::New();
+    }else{
+        m_colorFunction->RemoveAllPoints();        
     }
     m_colorFunction->AddRGBPoint(scalarRange[0], 0.0, 0.0, 0.0);
     m_colorFunction->AddRGBPoint(scalarRange[1], 1.0, 1.0, 1.0);
@@ -53,11 +55,11 @@ void E_Volume::SetImageData(vtkSmartPointer<vtkImageData> imageData){
 
     if(m_opacityFunction == NULL){
         m_opacityFunction = vtkSmartPointer<vtkPiecewiseFunction>::New();
+    }else{
+        m_opacityFunction->RemoveAllPoints();
     }
     m_opacityFunction->AddPoint(scalarRange[0], 0.0);
     m_opacityFunction->AddPoint(scalarRange[1], 1.0);
-
-
 
     if(m_volumeProperty == NULL){
         m_volumeProperty = vtkSmartPointer<vtkVolumeProperty>::New();
@@ -72,9 +74,11 @@ void E_Volume::SetImageData(vtkSmartPointer<vtkImageData> imageData){
     if(m_volumeMapper == NULL){
         m_volumeMapper = vtkSmartPointer<vtkSmartVolumeMapper>::New();
         m_volumeMapper->SetInputData(m_imageData);
-        m_volumeMapper->SetBlendModeToMaximumIntensity();
+        m_volumeMapper->SetBlendModeToMaximumIntensity();        
 
         this->SetMapper(m_volumeMapper);
+    }else{        
+        this->Update();
     }
 
     //Image
@@ -108,7 +112,7 @@ void E_Volume::SetGroundTruth(vtkSmartPointer<vtkImageData> imageData){
     if(m_gt_imageData == NULL){
         m_gt_imageData = vtkSmartPointer<vtkImageData>::New();
     }
-    m_gt_imageData = imageData;
+    m_gt_imageData->DeepCopy(imageData);
 
     double* scalarRange = m_gt_imageData->GetScalarRange();
 
@@ -149,10 +153,11 @@ void E_Volume::SetGroundTruth(vtkSmartPointer<vtkImageData> imageData){
         m_gt_volumeMapper->SetBlendModeToMaximumIntensity();
 
         m_gt_volume->SetMapper(m_gt_volumeMapper);
+    }else{                
+        // m_gt_volume->Update();
     }
 
     //Image
-
     if(m_gt_lut == NULL){
         m_gt_lut = vtkSmartPointer<vtkLookupTable>::New();
         m_gt_lut->SetTableRange(0.0, 2.0);
@@ -195,8 +200,9 @@ void E_Volume::AssignGroundTruthVolume(int slice, tensorflow::Tensor tensorImage
     int* dims = m_gt_imageData->GetDimensions();
     int* extent = m_gt_imageData->GetExtent();
 
+    // std::cout << scalarRange[0] << ',' << scalarRange[1] << std::endl;
 
-
+    //Assign to ground-truth imagedata
     auto tensorImageMapper = tensorImage.tensor<int,3>();
     for(int y=0 ; y<dims[1] ; y++){
         for(int x=0 ; x<dims[0] ; x++){
@@ -205,9 +211,9 @@ void E_Volume::AssignGroundTruthVolume(int slice, tensorflow::Tensor tensorImage
         }
     }
 
-    m_gt_imageData->Modified();
-    m_gt_volumeMapper->Update();
-    m_gt_volume->Update();
+    double* ss = m_gt_imageData->GetScalarRange();
+    // std::cout << ss[0] << ',' << ss[1] << std::endl;
+    
 }
 
 

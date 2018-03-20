@@ -3,6 +3,7 @@
 
 #include <vtkLookupTable.h>
 #include <vtkExtractVOI.h>
+#include <vtkImageData.h>
 
 #include <itkNiftiImageIO.h>
 
@@ -11,17 +12,6 @@
 
 E_VolumeManager::E_VolumeManager(){        
     this->m_volume = NULL;
-
-    this->m_gimageData = NULL;
-    this->m_gvolumeMapper = NULL;
-    this->m_gvolume = NULL;
-
-
-    for(int i=0 ; i<NUMSLICE ; i++){        
-
-        this->m_gresliceMapper[i] = NULL;
-        this->m_gresliceActor[i] = NULL;
-    }
     
 }
 
@@ -50,6 +40,7 @@ void E_VolumeManager::ImportVolume(std::string path){
     if(m_volume == NULL){
         m_volume = vtkSmartPointer<E_Volume>::New();
     }
+
     m_volume->SetImageData(conv->GetOutput());
 
 
@@ -79,7 +70,6 @@ void E_VolumeManager::ImportGroundTruth(std::string path){
     conv->SetInput(itkImageData);
     conv->Update();
     
-
     m_volume->SetGroundTruth(conv->GetOutput());
     E_Manager::Mgr()->GetRenderer(0)->AddViewProp(m_volume->GetGroundTruthVolume());
 
