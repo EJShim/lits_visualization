@@ -27,7 +27,7 @@ class E_VolumeManager{
     static const int NUMSLICE = 3;
 
     ///ITK Image Type
-    typedef itk::Image<short, 3> ImageType;
+    typedef itk::Image<float, 3> ImageType;
     typedef itk::ImageFileReader<ImageType> VolumeReader;
     typedef itk::ImageToVTKImageFilter<ImageType> itkVtkConverter;
 
@@ -38,7 +38,7 @@ class E_VolumeManager{
 
 
     protected:   
-    vtkSmartPointer<E_Volume> m_volume;
+    vtkSmartPointer<E_Volume> m_volume;    
 
     ///Ground-truth volume
     vtkSmartPointer<vtkImageData> m_gimageData;
@@ -49,14 +49,23 @@ class E_VolumeManager{
     vtkSmartPointer<vtkImageSliceMapper> m_gresliceMapper[NUMSLICE];
     vtkSmartPointer<vtkImageSlice> m_gresliceActor[NUMSLICE];
 
+
+    
+
     public:
+    //Import Data
     void ImportVolume(std::string path);
     void ImportGroundTruth(std::string path);
 
+    //move slice
     void ForwardSlice(int idx);
     void BackwardSlice(int idx);
 
+    //Show and hide 3d slice
     void Toggle3DSlice(int idx, int state);
+
+    //Make Empty image data
+    void MakeBlankGroundTruth();
 
 
     vtkSmartPointer<E_Volume> GetCurrentVolume(){return m_volume;}

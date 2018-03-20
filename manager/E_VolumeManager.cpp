@@ -2,9 +2,11 @@
 #include "E_VolumeManager.h"
 
 #include <vtkLookupTable.h>
+#include <vtkExtractVOI.h>
 
 #include <itkNiftiImageIO.h>
 
+#include "tensorflow/core/framework/tensor.h"
 
 
 E_VolumeManager::E_VolumeManager(){        
@@ -83,7 +85,6 @@ void E_VolumeManager::ImportGroundTruth(std::string path){
 
     for(int i=0 ; i<3 ; i++){
         vtkSmartPointer<vtkImageSlice> slice = m_volume->GetGroundTruthImageSlice(i);
-
         E_Manager::Mgr()->GetRenderer(0)->AddViewProp(slice);
         E_Manager::Mgr()->GetRenderer(i+1)->AddViewProp(slice);
     }
@@ -127,4 +128,36 @@ void E_VolumeManager::Toggle3DSlice(int idx, int state){
     E_Manager::Mgr()->Redraw(idx+1);
 
     return;
+}
+
+void E_VolumeManager::MakeBlankGroundTruth(){
+    if(m_volume == NULL) return;    
+
+    vtkSmartPointer<vtkImageData> imageData = vtkSmartPointer<vtkImageData>::New();
+    imageData->DeepCopy(m_volume->GetImageData());
+
+    int* dims = imageData->GetDimensions();
+
+    vtkSmartPointer<vtkExtractVOI> extractVOI = vtkSmartPointer<vtkExtractVOI>::New();
+    extractVOI->SetInputData(imageData);
+    extractVOI->SetVOI(32, dims[0]-32-1, 32, dims[1]-32-1, 0, dims[2]);
+    extractVOI->Update();
+
+    vtkSmartPointer<vtkImageData> croppedVolume = extractVOI->GetOutput();
+    dims = croppedVolume->GetDimensions();
+
+    //Set volume to zero
+    tensorflow::Tensor zero_tensor(tensorflow::DT_FLOAT, { dims[0], dims[1], dims[2]});
+    int* pointer = static_cast<int*>(croppedVolume->GetScalarPointer());
+    std::copy_n(zero_tensor.tensor<float,3>().data(), zero_tensor.tensor<float,3>().size(), pointer);
+
+    m_volume->SetGroundTruth(croppedVolume);
+    //Show Ground Truth Volume
+    E_Manager::Mgr()->GetRenderer(0)->AddViewProp(m_volume->GetGroundTruthVolume());
+    for(int i=0 ; i<3 ; i++){
+        vtkSmartPointer<vtkImageSlice> slice = m_volume->GetGroundTruthImageSlice(i);
+        E_Manager::Mgr()->GetRenderer(0)->AddViewProp(slice);
+        E_Manager::Mgr()->GetRenderer(i+1)->AddViewProp(slice);
+    }
+    E_Manager::Mgr()->RedrawAll(false);    
 }

@@ -3,7 +3,12 @@
 #include <QVTKWidget.h>
 #include <QGroupBox>
 #include <QCheckBox>
+
+#include "tensorflow/core/framework/tensor.h"
+
 #include "E_Manager.h"
+#include "E_SegmentationThread.h"
+
 
 
 class E_Window : public QMainWindow{
@@ -26,12 +31,16 @@ class E_Window : public QMainWindow{
     QWidget* InitCentralWidget();
     QGroupBox* Init3DSliceGroup();
 
+    E_SegmentationThread* m_segmentationThread;
+
+
+
     public Q_SLOTS:
     void OnTimeOut();
 
     void ImportVolume();
     void RunSegmentation();
-    void OnSegmentationCalculated(int i);
+    void OnSegmentationCalculated(int i, tensorflow::Tensor);
     void OnFinishedSegmentation();
 
     void ToggleAxlSlice(int state);

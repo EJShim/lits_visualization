@@ -12,7 +12,7 @@
 #include <vtkImageSlice.h>
 #include <vtkLookupTable.h>
 
-
+#include "tensorflow/core/framework/tensor.h"
 
 class E_Volume : public vtkVolume{
     public:
@@ -57,6 +57,7 @@ class E_Volume : public vtkVolume{
     public:    
     void SetImageData(vtkSmartPointer<vtkImageData>);
     void SetGroundTruth(vtkSmartPointer<vtkImageData>);
+    void AssignGroundTruthVolume(int slice, tensorflow::Tensor tensorImage);
 
     vtkSmartPointer<vtkImageData> GetImageData(){return m_imageData;}
     vtkSmartPointer<vtkImageSlice> GetImageSlice(int idx){return m_imageSlice[idx];}

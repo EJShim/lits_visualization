@@ -1,11 +1,11 @@
 #include "E_Window.h"
-#include "E_SegmentationThread.h"
 
 #include <iostream>
 #include <QGridLayout>
 #include <QAction>
 #include <QFileDialog>
 #include <QTimer>
+#include <QThread>
 
 E_Window::E_Window(QWidget* parent):QMainWindow(parent){
     //Show in maximum size
@@ -15,8 +15,9 @@ E_Window::E_Window(QWidget* parent):QMainWindow(parent){
     this->addToolBar(Qt::TopToolBarArea, this->InitToolbar());
     
     //Initialize Central WIdget    
-    this->setCentralWidget(this->InitCentralWidget());    
+    this->setCentralWidget(this->InitCentralWidget());
 
+    m_segmentationThread = NULL;
 }
 
 E_Window::~E_Window(){
@@ -122,34 +123,41 @@ void E_Window::ImportVolume(){
 
 void E_Window::RunSegmentation(){
 
+    //Make Blank Ground Truth
+    E_Manager::VolumeMgr()->MakeBlankGroundTruth();    
+
+    //Update Rendering 3d slice
     m_checkboxAxl->setCheckState(Qt::Unchecked);
     m_checkboxCor->setCheckState(Qt::Unchecked);
     m_checkboxSag->setCheckState(Qt::Checked);
 
-    E_Manager::VolumeMgr()->GetCurrentVolume()->SetSlice(2, 0);
-    E_Manager::Mgr()->Redraw(0);
-    E_Manager::Mgr()->Redraw(3);
-
-
-    E_SegmentationThread *segThread = new E_SegmentationThread();
-    connect(segThread, &E_SegmentationThread::onCalculated, this, &E_Window::OnSegmentationCalculated);
-    connect(segThread, &E_SegmentationThread::finished, this, &E_Window::OnFinishedSegmentation);
 
     //Set Input Data
-    segThread->SetImageData(E_Manager::VolumeMgr()->GetCurrentVolume()->GetImageData());
-    segThread->start();
 
-    // QTimer * timer = new QTimer(this);
-    // connect(timer, SIGNAL(timeout()), this, SLOT(OnTimeOut()));
-    // timer->start(500);
+    //Initialize Segmentation Thread.
+    qRegisterMetaType<tensorflow::Tensor>("tensorflow::Tensor"); 
+    QThread* thread = new QThread;
+    E_SegmentationThread* segmentationWorker = new E_SegmentationThread();
+    segmentationWorker->SetImageData(E_Manager::VolumeMgr()->GetCurrentVolume()->GetImageData());
+    segmentationWorker->moveToThread(thread);
+    
+    connect(thread, SIGNAL(started()), segmentationWorker, SLOT(process()));
+    connect(segmentationWorker, SIGNAL(onCalculated(int, tensorflow::Tensor)), this, SLOT(OnSegmentationCalculated(int, tensorflow::Tensor)));
+    connect(segmentationWorker, SIGNAL(finished()), this, SLOT(OnFinishedSegmentation()));
+    
+    
+    thread->start();
 }
 
-void E_Window::OnSegmentationCalculated(int i){    
-    // Update Animation     
+void E_Window::OnSegmentationCalculated(int i, tensorflow::Tensor t){
+    
+    // Update Animation    
     E_Manager::VolumeMgr()->GetCurrentVolume()->SetSlice(2, i);
+    E_Manager::VolumeMgr()->GetCurrentVolume()->AssignGroundTruthVolume(i, t);
 
-    E_Manager::Mgr()->Redraw(0);
-    E_Manager::Mgr()->Redraw(3);
+    // E_Manager::Mgr()->Redraw(0);
+    // E_Manager::Mgr()->Redraw(3);
+    E_Manager::Mgr()->RedrawAll();
     
 }
 

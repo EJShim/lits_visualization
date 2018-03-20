@@ -104,8 +104,11 @@ void E_Volume::SetImageData(vtkSmartPointer<vtkImageData> imageData){
 }
 
 void E_Volume::SetGroundTruth(vtkSmartPointer<vtkImageData> imageData){
-    m_gt_imageData = vtkSmartPointer<vtkImageData>::New();
-    m_gt_imageData->DeepCopy(imageData);
+
+    if(m_gt_imageData == NULL){
+        m_gt_imageData = vtkSmartPointer<vtkImageData>::New();
+    }
+    m_gt_imageData = imageData;
 
     double* scalarRange = m_gt_imageData->GetScalarRange();
 
@@ -183,6 +186,28 @@ void E_Volume::SetGroundTruth(vtkSmartPointer<vtkImageData> imageData){
         int sliceNum = m_gt_sliceMapper[i]->GetSliceNumberMaxValue() / 2;
         m_gt_sliceMapper[i]->SetSliceNumber(sliceNum);
     }    
+}
+
+void E_Volume::AssignGroundTruthVolume(int slice, tensorflow::Tensor tensorImage){
+    if(m_gt_imageData == NULL) return;
+
+    double* scalarRange = m_gt_imageData->GetScalarRange();    
+    int* dims = m_gt_imageData->GetDimensions();
+    int* extent = m_gt_imageData->GetExtent();
+
+
+
+    auto tensorImageMapper = tensorImage.tensor<int,3>();
+    for(int y=0 ; y<dims[1] ; y++){
+        for(int x=0 ; x<dims[0] ; x++){
+            float* pointer = static_cast<float*>(m_gt_imageData->GetScalarPointer(x+extent[0], y+extent[2], slice));
+            pointer[0] = tensorImageMapper(0, x, y);            
+        }
+    }
+
+    m_gt_imageData->Modified();
+    m_gt_volumeMapper->Update();
+    m_gt_volume->Update();
 }
 
 

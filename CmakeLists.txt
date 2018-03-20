@@ -54,3 +54,6 @@ find_package(ITK REQUIRED)
 include(${ITK_USE_FILE})
 target_link_libraries(${PROJECT_NAME} ${ITK_LIBRARIES})
 
+find_package(Tensorflow)
+target_link_libraries(${PROJECT_NAME} tensorflow)
+
