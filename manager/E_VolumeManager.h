@@ -51,7 +51,7 @@ class E_VolumeManager{
     void MakeBlankGroundTruth();
 
     /// Because of bug
-    void UpdateGTVolume();
+    void UpdateVolume(vtkSmartPointer<vtkVolume> volume);
 
     vtkSmartPointer<E_Volume> GetCurrentVolume(){return m_volume;}
 

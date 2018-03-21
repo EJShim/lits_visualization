@@ -68,6 +68,7 @@ void E_Manager::SetVTKWidget(QVTKWidget* widget, int idx){
 }
 
 void E_Manager::Redraw(int idx, bool reset){
+    this->m_renderer[idx]->Render();
     this->m_renderer[idx]->GetRenderWindow()->Render();
     
     if(reset){

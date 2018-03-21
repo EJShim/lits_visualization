@@ -73,7 +73,7 @@ void E_Volume::SetImageData(vtkSmartPointer<vtkImageData> imageData){
     
     if(m_volumeMapper == NULL){
         m_volumeMapper = vtkSmartPointer<vtkSmartVolumeMapper>::New();
-        m_volumeMapper->SetInputData(m_imageData);
+        m_volumeMapper->SetInputData(m_imageData);        
         m_volumeMapper->SetBlendModeToMaximumIntensity();        
 
         this->SetMapper(m_volumeMapper);
@@ -114,8 +114,6 @@ void E_Volume::SetGroundTruth(vtkSmartPointer<vtkImageData> imageData){
     }
     m_gt_imageData->DeepCopy(imageData);
 
-    double* scalarRange = m_gt_imageData->GetScalarRange();
-
     if(m_gt_volume == NULL){
         m_gt_volume = vtkSmartPointer<vtkVolume>::New();
     }
@@ -150,7 +148,8 @@ void E_Volume::SetGroundTruth(vtkSmartPointer<vtkImageData> imageData){
     if(m_gt_volumeMapper == NULL){
         m_gt_volumeMapper = vtkSmartPointer<vtkSmartVolumeMapper>::New();
         m_gt_volumeMapper->SetInputData(m_gt_imageData);
-        m_gt_volumeMapper->SetBlendModeToMaximumIntensity();
+        // m_gt_volumeMapper->SetRequestedRenderModeToRayCast();
+        m_gt_volumeMapper->SetBlendModeToComposite();
 
         m_gt_volume->SetMapper(m_gt_volumeMapper);
     }else{                
@@ -196,24 +195,22 @@ void E_Volume::SetGroundTruth(vtkSmartPointer<vtkImageData> imageData){
 void E_Volume::AssignGroundTruthVolume(int slice, tensorflow::Tensor tensorImage){
     if(m_gt_imageData == NULL) return;
 
-    double* scalarRange = m_gt_imageData->GetScalarRange();    
-    int* dims = m_gt_imageData->GetDimensions();
-    int* extent = m_gt_imageData->GetExtent();
-
-    // std::cout << scalarRange[0] << ',' << scalarRange[1] << std::endl;
+    //Deepcopy - assign - reset ground truth (to avoid VTK bug...)
+    vtkSmartPointer<vtkImageData> imageData = vtkSmartPointer<vtkImageData>::New();
+    imageData->DeepCopy(m_gt_imageData);
+        
+    int* dims = imageData->GetDimensions();
+    int* extent = imageData->GetExtent();
 
     //Assign to ground-truth imagedata
     auto tensorImageMapper = tensorImage.tensor<int,3>();
     for(int y=0 ; y<dims[1] ; y++){
         for(int x=0 ; x<dims[0] ; x++){
-            float* pointer = static_cast<float*>(m_gt_imageData->GetScalarPointer(x+extent[0], y+extent[2], slice));
+            float* pointer = static_cast<float*>(imageData->GetScalarPointer(x+extent[0], y+extent[2], slice));            
             pointer[0] = tensorImageMapper(0, x, y);            
         }
     }
-
-    double* ss = m_gt_imageData->GetScalarRange();
-    // std::cout << ss[0] << ',' << ss[1] << std::endl;
-    
+    SetGroundTruth(imageData);
 }
 
 

@@ -51,8 +51,9 @@ void E_VolumeManager::ImportVolume(std::string path){
         m_bVolumeInRenderer = true;
     }
     else{
-        E_Manager::Mgr()->GetRenderer(E_Manager::VIEW_MAIN)->RemoveViewProp(m_volume);
-        E_Manager::Mgr()->GetRenderer(E_Manager::VIEW_MAIN)->AddViewProp(m_volume);        
+        UpdateVolume(m_volume);
+        // E_Manager::Mgr()->GetRenderer(E_Manager::VIEW_MAIN)->RemoveViewProp(m_volume);
+        // E_Manager::Mgr()->GetRenderer(E_Manager::VIEW_MAIN)->AddViewProp(m_volume);        
     }
         
 
@@ -91,7 +92,7 @@ void E_VolumeManager::ImportGroundTruth(std::string path){
         }
         m_bGTInRenderer = true;
     }else{
-        UpdateGTVolume();
+        UpdateVolume(m_volume->GetGroundTruthVolume());
     }
     
     
@@ -161,7 +162,7 @@ void E_VolumeManager::MakeBlankGroundTruth(){
     m_volume->SetGroundTruth(croppedVolume);
     
     //Show Ground Truth Volume
-    E_Manager::Mgr()->GetRenderer(0)->AddViewProp(m_volume->GetGroundTruthVolume());
+    E_Manager::Mgr()->GetRenderer(E_Manager::VIEW_MAIN)->AddViewProp(m_volume->GetGroundTruthVolume());
     for(int i=0 ; i<3 ; i++){
         vtkSmartPointer<vtkImageSlice> slice = m_volume->GetGroundTruthImageSlice(i);
         E_Manager::Mgr()->GetRenderer(0)->AddViewProp(slice);
@@ -170,7 +171,7 @@ void E_VolumeManager::MakeBlankGroundTruth(){
     E_Manager::Mgr()->RedrawAll(false);    
 }
 
-void E_VolumeManager::UpdateGTVolume(){
-    E_Manager::Mgr()->GetRenderer(0)->RemoveViewProp(m_volume->GetGroundTruthVolume());
-    E_Manager::Mgr()->GetRenderer(0)->AddViewProp(m_volume->GetGroundTruthVolume());
+void E_VolumeManager::UpdateVolume(vtkSmartPointer<vtkVolume> volume){
+    E_Manager::Mgr()->GetRenderer(0)->RemoveViewProp(volume);
+    E_Manager::Mgr()->GetRenderer(0)->AddViewProp(volume);
 }
