@@ -46,11 +46,7 @@ QToolBar* E_Window::InitToolbar(){
     toolbar->addAction(segmentation_action);
     connect(segmentation_action, SIGNAL(triggered()), this, SLOT(RunSegmentation()));
 
-
-    
     toolbar->addWidget(Init3DSliceGroup());
-
-    
 
     return toolbar;
 }

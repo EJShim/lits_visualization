@@ -26,7 +26,7 @@ void E_SegmentationThread::process(){
     qRegisterMetaType<tensorflow::Tensor>("tensorflow::Tensor");
 
     //temp - use resource in the future
-    std::string path = "/Users/ej/projects/tf_cpp_test/weights/tf_converted_with_preprocessing";
+    std::string path = "/Users/EJ/Projects/lits_visualization/resources/weights";
     tensorflow::SavedModelBundle bundle;
     //why should I do tensorflow:: here??
     tensorflow::LoadSavedModel(tensorflow::SessionOptions(), tensorflow::RunOptions(), path, {"serve"}, &bundle);
