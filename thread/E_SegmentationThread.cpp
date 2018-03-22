@@ -32,7 +32,7 @@ void E_SegmentationThread::process(){
     tensorflow::LoadSavedModel(tensorflow::SessionOptions(), tensorflow::RunOptions(), path, {"serve"}, &bundle);
     tensorflow::Session* session = bundle.session.get();
     
-    for(int z=380; z<382 ; z++){
+    for(int z=2; z<m_dims[2]-2 ; z++){
         vtkSmartPointer<vtkImageData> slice = GetSingleBatchImage(z);
         tensorflow::Tensor singleBatch = ConvertImageToTensor(slice);
 

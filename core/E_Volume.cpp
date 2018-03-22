@@ -210,7 +210,9 @@ void E_Volume::AssignGroundTruthVolume(int slice, tensorflow::Tensor tensorImage
             pointer[0] = tensorImageMapper(0, x, y);            
         }
     }
-    SetGroundTruth(imageData);
+
+    m_gt_imageData->DeepCopy(imageData);
+    // SetGroundTruth(imageData);
 }
 
 

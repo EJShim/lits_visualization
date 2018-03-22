@@ -4,9 +4,6 @@
 #include <iostream>
 
 #include <vtkSmartPointer.h>
-
-
-
 #include <itkImage.h>
 #include <itkImageFileReader.h>
 #include <itkImageToVTKImageFilter.h>
