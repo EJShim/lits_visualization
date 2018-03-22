@@ -24,6 +24,11 @@ include_directories(
     thread/
 )
 
+if (WIN32)
+    add_definitions( -DCOMPILER_MSVC)
+    add_definitions( -DNOMINMAX)
+endif(WIN32)
+
 #ADD EXECUTABLE
 if(${PUBLISH})
     if (WIN32)
