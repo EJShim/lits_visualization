@@ -87,7 +87,7 @@ void E_VolumeManager::ImportGroundTruth(std::string path){
         E_Manager::Mgr()->GetRenderer(0)->AddViewProp(m_volume->GetGroundTruthVolume());
         for(int i=0 ; i<3 ; i++){
             vtkSmartPointer<vtkImageSlice> slice = m_volume->GetGroundTruthImageSlice(i);
-            E_Manager::Mgr()->GetRenderer(0)->AddViewProp(slice);
+            //E_Manager::Mgr()->GetRenderer(0)->AddViewProp(slice);
             E_Manager::Mgr()->GetRenderer(i+1)->AddViewProp(slice);
         }
         m_bGTInRenderer = true;

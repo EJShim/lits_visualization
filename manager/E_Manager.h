@@ -1,6 +1,5 @@
-#include <QVTKWidget.h>
+#include <QVTKOpenGLWidget.h>
 #include <vtkSmartPointer.h>
-#include <vtkRenderWindow.h>
 #include <vtkRenderer.h>
 
 #include "E_VolumeManager.h"
@@ -32,7 +31,7 @@ class E_Manager{
     vtkRenderer* GetRenderer(int idx){return this->m_renderer[idx];}
 
     //Initialize VTK Widgets
-    void SetVTKWidget(QVTKWidget* widget, int idx);
+    void SetVTKWidget(QVTKOpenGLWidget* widget, int idx);
 
     void Redraw(int idx, bool reset=false);
     void RedrawAll(bool reset=false);

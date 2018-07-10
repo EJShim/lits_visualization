@@ -1,6 +1,6 @@
 #include <QMainWindow>
 #include <QToolBar>
-#include <QVTKWidget.h>
+#include <QVTKOpenGLWidget.h>
 #include <QGroupBox>
 #include <QCheckBox>
 
@@ -19,7 +19,7 @@ class E_Window : public QMainWindow{
     ~E_Window();
     
     protected:
-    QVTKWidget* m_renderingWidget[E_Manager::NUM_VIEW];
+    QVTKOpenGLWidget* m_renderingWidget[E_Manager::NUM_VIEW];
 
     ///Checkboxex for 3d slice
     QCheckBox* m_checkboxAxl;

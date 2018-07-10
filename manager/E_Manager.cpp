@@ -2,7 +2,8 @@
 
 #include <iostream>
 #include <vtkCamera.h>
-
+#include <vtkGenericOpenGLRenderWindow.h>
+#include <vtkRenderWindowInteractor.h>
 #include "E_InteractorStyle.h"
 
 
@@ -43,40 +44,47 @@ void E_Manager::ClearMemory(){
 }
 
 
-void E_Manager::SetVTKWidget(QVTKWidget* widget, int idx){
+void E_Manager::SetVTKWidget(QVTKOpenGLWidget* widget, int idx){
+
     this->m_renderer[idx] = vtkSmartPointer<vtkRenderer>::New();
+    vtkSmartPointer<vtkGenericOpenGLRenderWindow> renWin = vtkSmartPointer<vtkGenericOpenGLRenderWindow>::New();
+    // renWin->OffScreenRenderingOn();
+    renWin->AddRenderer(this->m_renderer[idx]);
+
     if(idx != 0){
         this->m_renderer[idx]->GetActiveCamera()->ParallelProjectionOn();
-
+    
         //Set 2D Interactor Style
-        vtkSmartPointer<E_InteractorStyle> interactorstyle = vtkSmartPointer<E_InteractorStyle>::New();
+        vtkSmartPointer<E_InteractorStyle> interactorstyle = vtkSmartPointer<E_InteractorStyle>::New();        
         interactorstyle->SetIdx(idx-1);
-        widget->GetRenderWindow()->GetInteractor()->SetInteractorStyle(interactorstyle);
-        
+
+        vtkSmartPointer<vtkRenderWindowInteractor> interactor = vtkSmartPointer<vtkRenderWindowInteractor>::New();
+        interactor->SetInteractorStyle(interactorstyle);
+        renWin->SetInteractor(interactor);
+
         if(idx == 1){
             this->m_renderer[idx]->GetActiveCamera()->Azimuth(-90.0);
         }else if(idx == 2){
             this->m_renderer[idx]->GetActiveCamera()->Elevation(90.0);   
         }
+         this->m_renderer[idx]->GetActiveCamera()->OrthogonalizeViewUp();
     }
-     
-    
 
-
-
-    widget->GetRenderWindow()->AddRenderer(this->m_renderer[idx]);
+    widget->SetRenderWindow(renWin);
+    renWin->Render();
 }
 
 void E_Manager::Redraw(int idx, bool reset){
-    this->m_renderer[idx]->Render();
-    this->m_renderer[idx]->GetRenderWindow()->Render();
-    
+
     if(reset){
-        this->m_renderer[idx]->ResetCamera(); 
+        this->m_renderer[idx]->ResetCamera();
         if(idx != 0){
             this->m_renderer[idx]->GetActiveCamera()->Zoom(1.5);
         }
     }
+
+    // this->m_renderer[idx]->Render();
+    this->m_renderer[idx]->GetRenderWindow()->Render();
 }
 
 void E_Manager::RedrawAll(bool reset){

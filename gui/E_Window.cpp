@@ -9,7 +9,6 @@
 
 E_Window::E_Window(QWidget* parent):QMainWindow(parent){
     //Show in maximum size
-    this->showMaximized();
 
     // Initialize toolbar
     this->addToolBar(Qt::TopToolBarArea, this->InitToolbar());
@@ -18,6 +17,8 @@ E_Window::E_Window(QWidget* parent):QMainWindow(parent){
     this->setCentralWidget(this->InitCentralWidget());
 
     m_segmentationThread = NULL;
+
+    this->showMaximized();
 }
 
 E_Window::~E_Window(){
@@ -80,9 +81,15 @@ QGroupBox* E_Window::Init3DSliceGroup(){
 QWidget* E_Window::InitCentralWidget(){
     //Initialize VTK Widget
     for(int i=0 ; i<E_Manager::NUM_VIEW ; i++){
-        this->m_renderingWidget[i] = new QVTKWidget;
+        this->m_renderingWidget[i] = new QVTKOpenGLWidget();        
         E_Manager::Mgr()->SetVTKWidget(this->m_renderingWidget[i],i);
     }
+
+    #ifdef __APPLE__
+        //Force to use GL>3.2,, mac default is 2.1
+        QSurfaceFormat::setDefaultFormat(widget->defaultFormat());
+        widget->setFormat(widget->defaultFormat());        
+    #endif
     
     
     // Initialize Central Widgets
