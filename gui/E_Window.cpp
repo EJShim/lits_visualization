@@ -4,6 +4,7 @@
 #include <QGridLayout>
 #include <QAction>
 #include <QFileDialog>
+#include <QFileInfo>
 #include <QTimer>
 #include <QThread>
 
@@ -112,16 +113,24 @@ QWidget* E_Window::InitCentralWidget(){
 
 ////////////////////////////////////////////////////////////////////Action SLOTS////////////////////////////////////////////////////////
 void E_Window::ImportVolume(){    
-    QString fileName = QFileDialog::getOpenFileName(this, ("Open File"),"~/..",
-                                                ("volumes (*.dcm *.nii"));
+    
+    QString fileName = QFileDialog::getOpenFileName(this, ("Open File"),"~/..", tr("Dicom file(*.dcm) ;; NII file(*.nii)"));
 
-    // If file is not selected
-    if(fileName == ""){
-        return;
+    if(fileName.length() < 1) return;
+    QFileInfo info(fileName);
+    QString ext = info.completeSuffix();
+
+
+    // Import Volume
+    if(ext == "nii"){
+        E_Manager::VolumeMgr()->ImportNII(fileName.toLocal8Bit().data());
+    }
+    else if(ext == "dcm"){
+        std::cout << "import dicom " << std::endl;
+        QDir directoryPath = info.dir();
+        E_Manager::VolumeMgr()->ImportDicom(directoryPath.absolutePath().toLocal8Bit().data());
     }
 
-    // Import Volume                                        
-    E_Manager::VolumeMgr()->ImportVolume(fileName.toStdString());
 }
 
 void E_Window::RunSegmentation(){

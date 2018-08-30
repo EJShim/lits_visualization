@@ -8,6 +8,10 @@
 #include <itkNiftiImageIO.h>
 #include "tensorflow/core/framework/tensor.h"
 
+#include "itkGDCMImageIO.h"
+#include "itkGDCMSeriesFileNames.h"
+
+
 
 E_VolumeManager::E_VolumeManager(){        
     this->m_volume = NULL;
@@ -20,18 +24,107 @@ E_VolumeManager::E_VolumeManager(){
 E_VolumeManager::~E_VolumeManager(){
 
 }
+void E_VolumeManager::ImportDicom(const char* path){
+    std::cout << "Import Dicoms from " << path << std::endl;
 
-void E_VolumeManager::ImportVolume(std::string path){
+    
+
+    typedef itk::GDCMImageIO ImageIOType;
+
+    typedef itk::GDCMSeriesFileNames NamesGeneratorType;    
+    NamesGeneratorType::Pointer nameGenerator = NamesGeneratorType::New();
+    nameGenerator->SetUseSeriesDetails(true);
+    nameGenerator->AddSeriesRestriction("0008|0021");
+    nameGenerator->SetDirectory(path);
+
+    typedef std::vector<std::string> SeriesIdContainer;
+    const SeriesIdContainer & seriesUID = nameGenerator->GetSeriesUIDs();
+    SeriesIdContainer::const_iterator seriesItr = seriesUID.begin();
+    SeriesIdContainer::const_iterator seriesEnd = seriesUID.end();
+
+
+    std::vector<DicomReader::Pointer> imageDataList; 
+
+    while (seriesItr != seriesEnd)
+    {
+        std::vector<std::string> fileNames = nameGenerator->GetFileNames(seriesItr->c_str());
+
+        std::cout << fileNames.size() << std::endl;
+
+        ///Define Reader
+        DicomReader::Pointer reader = DicomReader::New();
+        ImageIOType::Pointer dicomIO = ImageIOType::New();
+        reader->SetImageIO(dicomIO);        
+        reader->SetFileNames(fileNames);
+        reader->Update();
+
+        imageDataList.push_back(reader);
+
+        ++seriesItr;
+    }
+
+    std::cout << "Number of Sereises : " << imageDataList.size() << std::endl;
+
+
+    ///////////////////Test Volume, from here, refactoring needed! ///////////////////////////////////////////
+    ImageType::Pointer itkImageData = imageDataList[4]->GetOutput();
+
+
+    ///Add Orientation
+    OrientImageFilterType::Pointer orienter = OrientImageFilterType::New();
+    orienter->UseImageDirectionOn();
+    orienter->SetInput(itkImageData);
+    orienter->Update();
+
+    // Convert to vtkimagedataclear
+    itkVtkConverter::Pointer conv = itkVtkConverter::New();
+    conv->SetInput(orienter->GetOutput());
+    conv->Update();
+
+      //Make Volume
+    if(m_volume == NULL){
+        m_volume = vtkSmartPointer<E_Volume>::New();        
+    }
+    m_volume->SetImageData(conv->GetOutput());
+    
+
+    if(!m_bVolumeInRenderer){
+        E_Manager::Mgr()->GetRenderer(E_Manager::VIEW_MAIN)->AddViewProp(m_volume);
+        for(int i=0 ; i<NUMSLICE ; i++){
+            vtkSmartPointer<vtkImageSlice> slice = m_volume->GetImageSlice(i);
+            E_Manager::Mgr()->GetRenderer(i+1)->AddViewProp(slice);
+        }
+        
+        m_bVolumeInRenderer = true;
+    }
+    else{
+        UpdateVolume(m_volume);
+        // E_Manager::Mgr()->GetRenderer(E_Manager::VIEW_MAIN)->RemoveViewProp(m_volume);
+        // E_Manager::Mgr()->GetRenderer(E_Manager::VIEW_MAIN)->AddViewProp(m_volume);        
+    }
+
+    E_Manager::Mgr()->RedrawAll(true);
+
+}
+
+
+
+void E_VolumeManager::ImportNII(const char* path){
     // Make ITK Image Data    
-    VolumeReader::Pointer reader = VolumeReader::New();
+    NIIReader::Pointer reader = NIIReader::New();
     reader->SetFileName(path);
     reader->Update();
     ImageType::Pointer itkImageData = reader->GetOutput();
+
+        ///Add Orientation
+    OrientImageFilterType::Pointer orienter = OrientImageFilterType::New();
+    orienter->UseImageDirectionOn();
+    orienter->SetInput(itkImageData);
+    orienter->Update();
     
-    // Convert to vtkimagedata
-    typedef itk::ImageToVTKImageFilter<ImageType> itkVtkConverter;
+    // Convert to vtkimagedataclear
     itkVtkConverter::Pointer conv = itkVtkConverter::New();
-    conv->SetInput(itkImageData);
+    conv->SetInput(orienter->GetOutput());
     conv->Update();
 
     //Make Volume
@@ -67,15 +160,22 @@ void E_VolumeManager::ImportGroundTruth(std::string path){
     if(m_volume == NULL) return;
 
     // Make ITK Image Data    
-    VolumeReader::Pointer reader = VolumeReader::New();
+    NIIReader::Pointer reader = NIIReader::New();
     reader->SetFileName(path);
     reader->Update();
     ImageType::Pointer itkImageData = reader->GetOutput();
+
+            ///Add Orientation
+    OrientImageFilterType::Pointer orienter = OrientImageFilterType::New();
+    orienter->UseImageDirectionOn();
+    orienter->SetInput(itkImageData);
+    orienter->Update();
+    
     
 
     // Convert to vtkimagedata    
     itkVtkConverter::Pointer conv = itkVtkConverter::New();
-    conv->SetInput(itkImageData);
+    conv->SetInput(orienter->GetOutput());
     conv->Update();
     
     //Update GT Image to the volume

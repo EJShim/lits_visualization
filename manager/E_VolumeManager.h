@@ -6,7 +6,9 @@
 #include <vtkSmartPointer.h>
 #include <itkImage.h>
 #include <itkImageFileReader.h>
+#include <itkImageSeriesReader.h>
 #include <itkImageToVTKImageFilter.h>
+#include <itkOrientImageFilter.h>
 
 #include "E_Volume.h"
 
@@ -17,14 +19,15 @@ class E_VolumeManager{
 
     ///ITK Image Type
     typedef itk::Image<float, 3> ImageType;
-    typedef itk::ImageFileReader<ImageType> VolumeReader;
+    typedef itk::ImageFileReader<ImageType> NIIReader;
+    typedef itk::ImageSeriesReader<ImageType> DicomReader;
     typedef itk::ImageToVTKImageFilter<ImageType> itkVtkConverter;
+    typedef itk::OrientImageFilter<ImageType, ImageType> OrientImageFilterType;
+
 
     public:
     E_VolumeManager();
     ~E_VolumeManager();
-
-
 
     protected:   
     bool m_bVolumeInRenderer;
@@ -34,7 +37,8 @@ class E_VolumeManager{
 
     public:
     //Import Data
-    void ImportVolume(std::string path);
+    void ImportNII(const char* path);
+    void ImportDicom(const char* path);
     void ImportGroundTruth(std::string path);
 
     //move slice
