@@ -148,10 +148,6 @@ void E_VolumeManager::ImportNII(const char* path){
         // E_Manager::Mgr()->GetRenderer(E_Manager::VIEW_MAIN)->RemoveViewProp(m_volume);
         // E_Manager::Mgr()->GetRenderer(E_Manager::VIEW_MAIN)->AddViewProp(m_volume);        
     }
-        
-
-
-    
 
     E_Manager::Mgr()->RedrawAll(true);
 }
@@ -170,7 +166,6 @@ void E_VolumeManager::ImportGroundTruth(std::string path){
     orienter->UseImageDirectionOn();
     orienter->SetInput(itkImageData);
     orienter->Update();
-    
     
 
     // Convert to vtkimagedata    
